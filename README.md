@@ -38,6 +38,16 @@ APP 或 微信小程序
 pip install djangorestframework
 ```
 
+### 注册
+
+settings.py
+
+```python
+INSTALLED_APPS = [
+    "rest_framework"
+]
+```
+
 
 
 ## 接口调试工具
@@ -45,3 +55,29 @@ pip install djangorestframework
 postman
 
 apifox
+
+
+
+## 初步编写API
+
+- 基于django实现
+
+- 基于drf实现
+
+  
+
+### 路由
+
+```python
+path('auth/', views.auth),
+```
+
+
+
+### 视图
+
+```python
+def auth(request):
+    return JsonResponse({'status': True, 'message': "success"})
+```
+
