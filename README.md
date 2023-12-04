@@ -81,3 +81,7 @@ def auth(request):
     return JsonResponse({'status': True, 'message': "success"})
 ```
 
+
+
+## FBV 和 CBV
+
