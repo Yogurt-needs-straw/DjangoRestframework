@@ -85,3 +85,6 @@ def auth(request):
 
 ## FBV 和 CBV
 
+- 现象
+- 本质相同
+

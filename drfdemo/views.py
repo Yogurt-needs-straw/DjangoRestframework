@@ -6,6 +6,8 @@ from rest_framework.response import Response
 # Create your views here.
 from rest_framework.views import APIView
 
+from rest_framework.response import Response
+
 
 def auth(request):
     return JsonResponse({'status': True, 'message': "success"})
@@ -32,4 +34,9 @@ class UserView(APIView):
 
     def delete(self, request):
         return Response({'status': True, 'message': "DELETE"})
+
+class DemoView(APIView):
+
+    def get(self, request):
+        return Response({'status': True, 'message': "success"})
 
