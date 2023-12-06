@@ -88,3 +88,17 @@ def auth(request):
 - 现象
 - 本质相同
 
+
+
+**POST请求 免除CSRF token校验**
+
+```python
+@csrf_exempt
+def info(request):
+	pass
+```
+
+
+
+
+
