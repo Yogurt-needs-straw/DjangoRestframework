@@ -100,5 +100,36 @@ def info(request):
 
 
 
+## CBV -> (DRF) -> dispath
 
+```python
+path('user/<int:pk>', views.UserView.as_view())
 
+def get(self, request, pk):
+```
+
+- 请求对象和参数
+
+  django的request对象
+
+  ​	request.method
+
+  ​	request.GET
+
+  ​	request.POST
+
+​	drf 中的 request 参数，又一层封装
+
+​			# request._request.GET
+
+​			# request._request.POST
+
+​			# request._request.method
+
+​	class Request:
+
+​			def \__init__(self, request,......):
+
+​					self._request = request
+
+​					self.....
