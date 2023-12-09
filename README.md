@@ -135,9 +135,3 @@ def get(self, request, pk):
 ​					self.....
 
 
-
-
-
-
-
-123
