@@ -20,9 +20,6 @@ from drfdemo import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
-    path('auth/', views.auth),
-    path('login/', views.login),
-    path('info/', views.InfoView.as_view()),
+    path('home/', views.home),
     path('user/', views.UserView.as_view()),
-    path('demo/', views.DemoView.as_view()),
 ]

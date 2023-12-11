@@ -143,3 +143,35 @@ def get(self, request, pk):
 - 前后端分离
   - 用户系统 & 专业分工
 
+
+
+## restframework匿名用户报错
+
+> django 纯净版
+
+```python
+# 源码 restframework request.py 中 
+def _not_authenticated(self):
+    if api_settings.UNAUTHENTICATED_USER:
+        self.user = api_settings.UNAUTHENTICATED_USER()
+    else:
+        self.user = None
+```
+
+> 解决
+
+settings.py
+
+```python
+REST_FRAMEWORK = {
+    "UNAUTHENTICATED_USER": None,
+    # "UNAUTHENTICATED_TOKEN": None,
+}
+
+```
+
+
+
+
+
+ 
