@@ -172,6 +172,34 @@ REST_FRAMEWORK = {
 
 
 
+## Request 对象
+
+- OOP知识
+
+```python
+对象的封装
+class Foo(object):
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        
+    # 当通过对象访问一个不存在的东西，getattr会执行
+    def __getattr__(self, item):
+        print(item)
+		return 123
+    
+    # 只要执行 对象.xxx都会执行 __getattribute__
+    # 对象中有值，返回
+    # 对象中没有值，报错
+    def __getattribute__(self, item):
+        print("-->", item)
+        return 999
+```
 
 
- 
+
+- drf请求流程
+
+
+
+ 123
