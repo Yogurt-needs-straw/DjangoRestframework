@@ -194,6 +194,15 @@ class Foo(object):
     def __getattribute__(self, item):
         print("-->", item)
         return 999
+    
+    # 对象中有的成员，不会触发
+    # 对象中无的成员，会触发
+    def __getattr__(self, attr):
+        # attr = "yyy"
+        try:
+            return getattr(self._request, attr) # self._request.yyy
+        except AttributeError:
+            return self.__getattribute__(attr)
 ```
 
 
