@@ -195,6 +195,7 @@ class Foo(object):
         print("-->", item)
         return 999
     
+    # drf中request方法
     # 对象中有的成员，不会触发
     # 对象中无的成员，会触发
     def __getattr__(self, attr):
@@ -208,7 +209,7 @@ class Foo(object):
 
 
 - drf请求流程
+  - *args, **kwargs
 
 
-
- 123
+ 
