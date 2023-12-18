@@ -19,7 +19,7 @@ from django.urls import path
 from drfdemo import views
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    path('home/', views.home),
+    path('login/', views.LoginView.as_view()),
     path('user/', views.UserView.as_view()),
+    path('order/', views.OrderView.as_view()),
 ]
