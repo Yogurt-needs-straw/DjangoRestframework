@@ -221,3 +221,14 @@ class Foo(object):
   - 实现
     - 编写类 —> 认证组件
     - 应用组件
+
+
+
+全局配置用户授权
+
+```python
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES":["app名称.views.类名"]
+}
+```
+
