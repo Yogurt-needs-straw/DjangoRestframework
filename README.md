@@ -232,3 +232,22 @@ REST_FRAMEWORK = {
 }
 ```
 
+
+
+- 面向对象-继承
+
+  ```python
+  class APIView(object):
+      authentication_classes = 读取配置文件中的列表
+      
+      def dispatch(self):
+          self.authentication_classes
+  
+  class UserView(APIView):
+      authentication_classes = [11,22,33,44]
+          
+  obj = UserView()
+  obj.dispatch()
+  ```
+
+  
