@@ -255,6 +255,5 @@ REST_FRAMEWORK = {
 - 认证组件源码
   - 加载认证组件，本质就是实例化每个认证类的对象，并封装到request对象。
 
-
-
-none
+- 多个认证类
+  - 都返回None，都没有认证成功 -> 视图函数会执行，只不过 self.user  self.auth = None
