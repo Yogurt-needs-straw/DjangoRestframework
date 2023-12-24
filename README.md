@@ -257,3 +257,15 @@ REST_FRAMEWORK = {
 
 - 多个认证类
   - 都返回None，都没有认证成功 -> 视图函数会执行，只不过 self.user  self.auth = None
+
+
+
+- 状态码
+
+```python
+class MyAuthentication(BaseAuthentication):
+
+    def authenticate_header(self, request):
+        return "API"
+```
+

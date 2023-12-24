@@ -20,6 +20,9 @@ class MyAuthentication(BaseAuthentication):
             return "123", token
         raise AuthenticationFailed({"code": 400, "error": "认证失败"})
 
+    def authenticate_header(self, request):
+        return "API"
+
 class LoginView(APIView):
     # 不需要认证，直接访问即可
     authentication_classes = []
