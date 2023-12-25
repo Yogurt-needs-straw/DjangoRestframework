@@ -269,3 +269,14 @@ class MyAuthentication(BaseAuthentication):
         return "API"
 ```
 
+
+
+- 扩展 -> 子类的约束
+
+```python
+class Foo(object):
+    # 对子类进行约束，约束子类中必须要定义这个方法。（接口、抽象类和抽象方法）
+    def f1(self):
+        raise NotImplementedError("...")
+```
+
