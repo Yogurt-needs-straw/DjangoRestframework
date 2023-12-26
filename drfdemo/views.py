@@ -3,6 +3,9 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
+from drfdemo import models
+
+
 class MyAuthentication(BaseAuthentication):
     def authenticate(self, request):
         # 做用户认证：
@@ -29,6 +32,20 @@ class LoginView(APIView):
 
     def get(self, request):
         return Response("返回成功")
+
+    def post(self, request):
+        # 1.接收用户提交的用户名和密码 JSON
+        # print(request._request.body)
+        user = request.data.get("username")
+        pwd = request.data.get("password")
+
+        # 2.数据库校验
+        user_object = models.UserInfo.objects.filter(username=user, password=pwd).first()
+        if not user_object:
+            return Response({"code": 1001, "msg": "用户名密码错误"})
+
+
+        return Response("LoginView")
 
 class UserView(APIView):
     # 需要认证
