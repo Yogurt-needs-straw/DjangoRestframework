@@ -1,3 +1,4 @@
+import uuid
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.views import APIView
@@ -44,8 +45,13 @@ class LoginView(APIView):
         if not user_object:
             return Response({"code": 1001, "msg": "用户名密码错误"})
 
+        # 3.用户正确
+        token = str(uuid.uuid4())
+        user_object.token = token
+        user_object.save()
 
-        return Response("LoginView")
+        return Response({"code": 2001, "msg": token})
+
 
 class UserView(APIView):
     # 需要认证
