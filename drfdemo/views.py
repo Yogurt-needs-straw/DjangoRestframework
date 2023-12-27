@@ -5,27 +5,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from drfdemo import models
+from auth import QueryParamsAuthentication
 
-
-class MyAuthentication(BaseAuthentication):
-    def authenticate(self, request):
-        # 做用户认证：
-        # 1.读取请求传递的token
-        # 2.校验合法性
-        # 3.返回值
-        #  3.1 返回元组(request.user,request.auth)
-        #  3.2 抛出异常 认证失败
-        #  3.3 返回None  多个认证类[类1,类2]
-
-        token = request._request.GET.get("token")
-        token_2 = request.query_params.get("token")
-
-        if token:
-            return "123", token
-        raise AuthenticationFailed({"code": 400, "error": "认证失败"})
-
-    def authenticate_header(self, request):
-        return "API"
 
 class LoginView(APIView):
     # 不需要认证，直接访问即可
@@ -55,7 +36,7 @@ class LoginView(APIView):
 
 class UserView(APIView):
     # 需要认证
-    authentication_classes = [MyAuthentication,]
+    authentication_classes = [QueryParamsAuthentication,]
 
     def get(self, request):
         print(request.user, request.auth)
@@ -64,7 +45,7 @@ class UserView(APIView):
 
 class OrderView(APIView):
 
-    authentication_classes = [MyAuthentication, ]
+    authentication_classes = [QueryParamsAuthentication, ]
 
     def get(self, request):
         print(request.user, request.auth)
