@@ -5,7 +5,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from drfdemo import models
-from auth import QueryParamsAuthentication
 
 
 class LoginView(APIView):
@@ -36,16 +35,17 @@ class LoginView(APIView):
 
 class UserView(APIView):
     # 需要认证
-    authentication_classes = [QueryParamsAuthentication,]
+    # authentication_classes = []
 
     def get(self, request):
         print(request.user, request.auth)
         return Response("UserView")
 
+    def post(self, request):
+        print(request.user, request.auth)
+        return Response("UserViewPost")
 
 class OrderView(APIView):
-
-    authentication_classes = [QueryParamsAuthentication, ]
 
     def get(self, request):
         print(request.user, request.auth)

@@ -3,7 +3,7 @@ from rest_framework.exceptions import AuthenticationFailed
 
 from drfdemo import models
 
-
+# query中携带token
 class QueryParamsAuthentication(BaseAuthentication):
     def authenticate(self, request):
         # 做用户认证：
@@ -15,10 +15,10 @@ class QueryParamsAuthentication(BaseAuthentication):
         #  3.3 返回None  多个认证类[类1,类2]
 
         token = request.query_params.get("token")
+        if not token:
+            return
 
         user_object = models.UserInfo.objects.filter(token=token).first()
-
-
         if user_object:
             return user_object, token
 
@@ -27,6 +27,7 @@ class QueryParamsAuthentication(BaseAuthentication):
     def authenticate_header(self, request):
         return "API"
 
+# Header中携带token
 class HeaderAuthentication(BaseAuthentication):
     def authenticate(self, request):
         # 做用户认证：
@@ -38,6 +39,8 @@ class HeaderAuthentication(BaseAuthentication):
         #  3.3 返回None  多个认证类[类1,类2]
 
         token = request.META.get("HTTP_AUTHORIZATION")
+        if not token:
+            return
 
         user_object = models.UserInfo.objects.filter(token=token).first()
 
