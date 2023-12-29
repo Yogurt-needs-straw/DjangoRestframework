@@ -280,3 +280,29 @@ class Foo(object):
         raise NotImplementedError("...")
 ```
 
+
+
+## 权限组件
+
+认证组件 = [认证类、认证类、认证类]  -> 执行每个认证类中的authenticate方法
+
+权限组件 = [权限类、权限类、权限类...] -> 执行每个权限类中的allow_request方法  执行所有的权限类
+
+默认情况下，保证所有的权限类中的allow_request方法都返回True
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
