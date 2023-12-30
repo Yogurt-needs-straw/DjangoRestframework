@@ -5,11 +5,15 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from drfdemo import models
+from drfdemo.per import MyPermission
 
 
 class LoginView(APIView):
     # 不需要认证，直接访问即可
     authentication_classes = []
+
+    # 重新定义 权限校验
+    permission_classes = []
 
     def get(self, request):
         return Response("返回成功")
@@ -46,6 +50,9 @@ class UserView(APIView):
         return Response("UserViewPost")
 
 class OrderView(APIView):
+
+    # 权限组件的应用
+    permission_classes = [MyPermission, ]
 
     def get(self, request):
         print(request.user, request.auth)

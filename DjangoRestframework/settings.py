@@ -133,5 +133,10 @@ REST_FRAMEWORK = {
         "drfdemo.auth.QueryParamsAuthentication",
         "drfdemo.auth.HeaderAuthentication",
         "drfdemo.auth.NoAuthentication",
-    ]
+    ],
+
+    # 全局 权限校验
+    # "DEFAULT_PERMISSION_CLASSES":[
+    #     "drfdemo.per.MyPermission"
+    # ]
 }
