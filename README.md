@@ -299,6 +299,16 @@ class Foo(object):
 
 
 
+**源码**
+
+```python
+class APIView(View):
+    def initial(self, request, *args, **kwargs):
+        self.perform_authentication(request) # 认证组件的过程，循环执行每个authticate方法，失败抛出异常：request.user/auth
+        self.check_permissions(request) # 权限的校验
+        self.check_throttles(request)
+```
+
 
 
 
