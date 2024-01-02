@@ -292,13 +292,6 @@ class Foo(object):
 
 
 
-应用
-
-- 类
-- 应用
-
-
-
 **源码**
 
 ```python
@@ -308,6 +301,19 @@ class APIView(View):
         self.check_permissions(request) # 权限的校验
         self.check_throttles(request)
 ```
+
+
+
+应用
+
+- 类
+- 应用（局部+全局应用）
+
+
+
+应用场景
+
+- 经典角色、当前订单是他的下属创建的
 
 
 
