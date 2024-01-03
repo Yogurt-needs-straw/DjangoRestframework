@@ -6,6 +6,7 @@ from rest_framework.response import Response
 
 from drfdemo import models
 from drfdemo.per import MyPermission
+from drfdemo.view_check_permissions import CheckApiView
 
 
 class LoginView(APIView):
@@ -49,7 +50,8 @@ class UserView(APIView):
         print(request.user, request.auth)
         return Response("UserViewPost")
 
-class OrderView(APIView):
+# 使用自定义权限校验
+class OrderView(CheckApiView):
 
     # 权限组件的应用
     permission_classes = [MyPermission, ]
@@ -57,4 +59,6 @@ class OrderView(APIView):
     def get(self, request):
         print(request.user, request.auth)
         return Response("OrderView")
+
+
 
