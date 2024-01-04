@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from drfdemo import models
-from drfdemo.per import MyPermission
+from drfdemo.per import BossPermission, UserPermission, ManagerPermission
 from drfdemo.view_check_permissions import CheckApiView
 
 
@@ -38,7 +38,10 @@ class LoginView(APIView):
         return Response({"code": 2001, "msg": token})
 
 
-class UserView(APIView):
+class UserView(CheckApiView):
+    # 经理 或 总监 或 用户 可以访问
+    permission_classes = [BossPermission, ManagerPermission, UserPermission]
+
     # 需要认证
     # authentication_classes = []
 
@@ -53,12 +56,22 @@ class UserView(APIView):
 # 使用自定义权限校验
 class OrderView(CheckApiView):
 
+    # 经理 或 总监 可以访问
+
     # 权限组件的应用
-    permission_classes = [MyPermission, ]
+    permission_classes = [BossPermission, ManagerPermission]
 
     def get(self, request):
         print(request.user, request.auth)
         return Response("OrderView")
 
+
+class AvatarView(CheckApiView):
+    # 总监 或 员工 可以访问
+    permission_classes = [BossPermission, UserPermission]
+
+    def get(self, request):
+        print(request.user, request.auth)
+        return Response("AvatarView")
 
 
