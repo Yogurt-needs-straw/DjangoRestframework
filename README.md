@@ -351,4 +351,12 @@ class APIView(View):
 
 
 
-123
+使用：
+
+- 编写类
+  - 编写类
+  - 安装 django-redis配置 -> settings.py
+  - 安装 django-redis
+  - 启动redis服务
+- 应用类
+  - 局部应用

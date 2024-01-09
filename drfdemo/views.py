@@ -6,10 +6,15 @@ from rest_framework.response import Response
 
 from drfdemo import models
 from drfdemo.per import BossPermission, UserPermission, ManagerPermission
+from drfdemo.throttle import MyThrottle
 from drfdemo.view_check_permissions import CheckApiView
 
 
 class LoginView(APIView):
+
+    # 添加限流组件
+    throttle_classes = [MyThrottle, ]
+
     # 不需要认证，直接访问即可
     authentication_classes = []
 
@@ -27,6 +32,7 @@ class LoginView(APIView):
 
         # 2.数据库校验
         user_object = models.UserInfo.objects.filter(username=user, password=pwd).first()
+        # print(user_object)
         if not user_object:
             return Response({"code": 1001, "msg": "用户名密码错误"})
 
