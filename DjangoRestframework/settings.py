@@ -150,6 +150,11 @@ REST_FRAMEWORK = {
         "drfdemo.auth.NoAuthentication",
     ],
 
+    "DEFAULT_THROTTLE_RATES": {
+        "x1": "5/m",
+        # "x2": "5/m",
+    }
+
     # 全局 权限校验
     # "DEFAULT_PERMISSION_CLASSES":[
     #     "drfdemo.per.MyPermission"

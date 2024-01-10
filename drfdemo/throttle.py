@@ -2,10 +2,10 @@ from rest_framework.throttling import BaseThrottle, SimpleRateThrottle
 from django.core.cache import cache as default_cache
 
 class MyThrottle(SimpleRateThrottle):
-    scope = "xxx"
+    scope = "x1"
 
     # 访问频率 5分钟1次
-    THROTTLE_RATES = {"xxx": "5/m"}
+    THROTTLE_RATES = {"x1": "5/m"}
 
     cache = default_cache
 
