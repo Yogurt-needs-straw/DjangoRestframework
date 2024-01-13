@@ -6,14 +6,14 @@ from rest_framework.response import Response
 
 from drfdemo import models
 from drfdemo.per import BossPermission, UserPermission, ManagerPermission
-from drfdemo.throttle import MyThrottle
+from drfdemo.throttle import MyThrottle, IpThrottle, UserThrottle
 from drfdemo.view_check_permissions import CheckApiView
 
 
 class LoginView(APIView):
 
     # 添加限流组件
-    throttle_classes = [MyThrottle, ]
+    throttle_classes = [IpThrottle, ]
 
     # 不需要认证，直接访问即可
     authentication_classes = []
@@ -73,6 +73,9 @@ class OrderView(CheckApiView):
 
 
 class AvatarView(CheckApiView):
+    # 添加限流组件
+    throttle_classes = [UserThrottle, ]
+
     # 总监 或 员工 可以访问
     permission_classes = [BossPermission, UserPermission]
 

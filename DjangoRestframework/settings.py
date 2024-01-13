@@ -152,6 +152,8 @@ REST_FRAMEWORK = {
 
     "DEFAULT_THROTTLE_RATES": {
         "x1": "5/m",
+        "ip": "10/m",
+        "user": "5/m",
         # "x2": "5/m",
     }
 
