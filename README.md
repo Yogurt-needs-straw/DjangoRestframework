@@ -375,3 +375,17 @@ class APIView(View):
 
 - 无需登录，限流  1分钟 10次
 
+
+
+限流自定义错误提示
+
+拆分知识点
+
+- getattr
+- getatrribute
+- 继承
+
+request 封装 + 认证 + 权限 + 限流 => 文章 + 流程图
+
+
+
