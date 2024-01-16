@@ -84,3 +84,11 @@ class AvatarView(CheckApiView):
         return Response("AvatarView")
 
 
+class HomeView(APIView):
+
+    # 不需要认证，直接访问即可
+    authentication_classes = []
+
+    def get(self, request):
+
+        return Response("...")

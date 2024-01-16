@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'drfdemo.apps.DrfdemoConfig',
     'rest_framework',
-
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [

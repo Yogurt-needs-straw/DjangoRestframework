@@ -23,4 +23,8 @@ urlpatterns = [
     path('user/', views.UserView.as_view()),
     path('order/', views.OrderView.as_view()),
     path('avatar/', views.AvatarView.as_view()),
+
+
+    path('home/', views.HomeView.as_view()),
+
 ]
