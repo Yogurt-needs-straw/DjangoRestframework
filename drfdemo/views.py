@@ -1,6 +1,7 @@
 import uuid
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.versioning import QueryParameterVersioning
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -89,6 +90,12 @@ class HomeView(APIView):
     # 不需要认证，直接访问即可
     authentication_classes = []
 
+    # 配置文件 VERSION_PARAM
+    # http://127.0.0.1:8000/home/?xxx
+    versioning_class = QueryParameterVersioning
+
     def get(self, request):
+
+        print(request.version)
 
         return Response("...")

@@ -143,6 +143,7 @@ CACHES = {
 
 REST_FRAMEWORK = {
     "UNAUTHENTICATED_USER": None,
+    "VERSION_PARAM": "version",
     # "UNAUTHENTICATED_TOKEN": None,
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "drfdemo.auth.QueryParamsAuthentication",
