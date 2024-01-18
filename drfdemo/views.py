@@ -98,4 +98,6 @@ class HomeView(APIView):
 
         print(request.version)
 
+        self.dispatch()
+
         return Response("...")
