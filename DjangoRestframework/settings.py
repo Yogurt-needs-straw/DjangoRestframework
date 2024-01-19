@@ -144,6 +144,8 @@ CACHES = {
 REST_FRAMEWORK = {
     "UNAUTHENTICATED_USER": None,
     "VERSION_PARAM": "version",
+    "DEFAULT_VERSION": "v1",  # 默认v1版本
+    "ALLOWED_VERSIONS": ["v1", "v2"],
     # "UNAUTHENTICATED_TOKEN": None,
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "drfdemo.auth.QueryParamsAuthentication",
