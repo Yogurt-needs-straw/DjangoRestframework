@@ -98,6 +98,11 @@ class HomeView(APIView):
 
         print(request.version)
 
-        self.dispatch()
+        # 反向生成url
+        # http://127.0.0.1:8000/home/?version=v1
+        url = request.versioning_scheme.reverse('home', request=request)
+        print(url)
+
+        # self.dispatch()
 
         return Response("...")

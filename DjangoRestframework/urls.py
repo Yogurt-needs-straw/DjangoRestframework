@@ -25,6 +25,6 @@ urlpatterns = [
     path('avatar/', views.AvatarView.as_view()),
 
 
-    path('home/', views.HomeView.as_view()),
+    path('home/', views.HomeView.as_view(), name='home'),
 
 ]
