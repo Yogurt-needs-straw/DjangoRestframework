@@ -26,5 +26,6 @@ urlpatterns = [
 
 
     path('home/', views.HomeView.as_view(), name='home'),
+    path('api/<str:version>/home/', views.HomeToView.as_view(), name='home'),
 
 ]
