@@ -26,6 +26,7 @@ urlpatterns = [
 
 
     path('home/', views.HomeView.as_view(), name='home'),
-    path('api/<str:version>/home/', views.HomeToView.as_view(), name='home'),
+    path('api/<str:version>/home/', views.HomeToView.as_view(), name='homeTo'),
+    path('api/home/', views.HomeTiView.as_view(), name='homeTi'),
 
 ]

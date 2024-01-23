@@ -146,6 +146,7 @@ REST_FRAMEWORK = {
     "VERSION_PARAM": "version",
     "DEFAULT_VERSION": "v1",  # 默认v1版本
     "ALLOWED_VERSIONS": ["v1", "v2"],
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
     # "UNAUTHENTICATED_TOKEN": None,
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "drfdemo.auth.QueryParamsAuthentication",
