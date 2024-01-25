@@ -1,6 +1,8 @@
 import uuid
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.negotiation import DefaultContentNegotiation
+from rest_framework.parsers import JSONParser, FormParser
 from rest_framework.versioning import QueryParameterVersioning, URLPathVersioning, AcceptHeaderVersioning
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -106,6 +108,16 @@ class HomeView(APIView):
         # self.dispatch()
 
         return Response("...")
+
+    # 所有的解析器
+    parser_classes = [JSONParser, FormParser]
+
+    # 根据请求，匹配对应的解析器
+    content_negotiation_class = DefaultContentNegotiation
+
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        return Response("OK")
 
 class HomeToView(APIView):
     # 不需要认证，直接访问即可
