@@ -116,7 +116,9 @@ class HomeView(APIView):
     content_negotiation_class = DefaultContentNegotiation
 
     def post(self, request, *args, **kwargs):
+        # xxx
         print(request.data)
+
         return Response("OK")
 
 class HomeToView(APIView):
