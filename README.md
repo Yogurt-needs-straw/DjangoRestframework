@@ -387,6 +387,7 @@ class APIView(View):
 
 request 封装 + 认证 + 权限 + 限流 => 文章 + 流程图
 
+<<<<<<< HEAD
 
 
 ## 解析器
@@ -399,3 +400,8 @@ request 封装 + 认证 + 权限 + 限流 => 文章 + 流程图
    2. request.data = JSON解析器.parse
 3. request.data
 
+=======
+Failed to connect to github.com port 443
+Failed to connect to github.com port 443
+Failed to connect to github.com port 443
+>>>>>>> 2047ae674c02a33fcf8f8727ceb4ea82c80e9725
