@@ -400,3 +400,15 @@ request 封装 + 认证 + 权限 + 限流 => 文章 + 流程图
    2. request.data = JSON解析器.parse
 3. request.data
 
+
+
+**json.loads 与 json.load 区别**
+
+```python
+data_dict = json.loads('{"v1":123, "v2":345}')
+
+data_dict = json.load(文件对象)
+```
+
+
+

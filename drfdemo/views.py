@@ -112,11 +112,11 @@ class HomeView(APIView):
     # 所有的解析器
     parser_classes = [JSONParser, FormParser]
 
-    # 根据请求，匹配对应的解析器
+    # 根据请求，匹配对应的解析器; 寻找渲染器
     content_negotiation_class = DefaultContentNegotiation
 
     def post(self, request, *args, **kwargs):
-        # xxx
+        # 当调用request.data时就会触发解析的动作。
         print(request.data)
 
         return Response("OK")
