@@ -412,3 +412,62 @@ data_dict = json.load(文件对象)
 
 
 
+###  JSONParser （*）
+
+![image-20210827081058194](readme_img/image-20210827081058194.png)
+
+
+
+### FormParser
+
+![image-20210827081244795](readme_img/image-20210827081244795.png)
+
+
+
+### MultiPartParser（*）
+
+![image-20210827083047327](readme_img/image-20210827083047327.png)
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="http://127.0.0.1:8000/test/" method="post" enctype="multipart/form-data">
+    <input type="text" name="user" />
+    <input type="file" name="img">
+
+    <input type="submit" value="提交">
+
+</form>
+</body>
+</html>
+```
+
+
+
+### FileUploadParser（*）
+
+![image-20210827084403453](readme_img/image-20210827084403453.png)
+
+解析器可以设置多个，默认解析器：
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.parsers import MultiPartParser, JSONParser, FormParser
+
+class UserView(APIView):
+
+    def post(self, request):
+        print(request.content_type)
+        print(request.data)
+
+        return Response("...")
+
+```
+
+ 
