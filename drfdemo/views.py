@@ -2,7 +2,7 @@ import uuid
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.negotiation import DefaultContentNegotiation
-from rest_framework.parsers import JSONParser, FormParser
+from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from rest_framework.versioning import QueryParameterVersioning, URLPathVersioning, AcceptHeaderVersioning
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -144,3 +144,16 @@ class HomeTiView(APIView):
         print(request.version)
 
         return Response("...")
+
+
+class ImgView(APIView):
+
+    # 所有的解析器
+    # MultiPartParser 只支持文件上传
+    parser_classes = [MultiPartParser, ]
+
+    def post(self, request, *args, **kwargs):
+        # 当调用request.data时就会触发解析的动作。
+        print(request.data)
+
+        return Response("OK")

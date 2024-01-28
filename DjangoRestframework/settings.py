@@ -147,6 +147,7 @@ REST_FRAMEWORK = {
     "DEFAULT_VERSION": "v1",  # 默认v1版本
     "ALLOWED_VERSIONS": ["v1", "v2"],
     "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
+    "EDFAULT_PARSER_CLASSES": ["rest_framework.parsers.JSONParser"],  # 默认传送JSON格式
     # "UNAUTHENTICATED_TOKEN": None,
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "drfdemo.auth.QueryParamsAuthentication",
