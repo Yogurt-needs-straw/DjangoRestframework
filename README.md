@@ -471,3 +471,10 @@ class UserView(APIView):
 ```
 
  
+
+### 数据
+
+文件二进制读取
+
+- Tempa 对象
+- Tempa 对象 -> 临时文件
