@@ -478,3 +478,20 @@ class UserView(APIView):
 
 - Tempa 对象
 - Tempa 对象 -> 临时文件
+
+
+
+## 元类
+
+```python
+# 创建类：方式2
+# 类名 = type("类名", (父类,), {成员})
+Foo = type("Foo", (object,), {"v1":123, "func": lamba self: 999})
+```
+
+
+
+## 序列化器
+
+- 使用
+- 源码
