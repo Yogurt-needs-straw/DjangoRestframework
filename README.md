@@ -489,6 +489,32 @@ class UserView(APIView):
 Foo = type("Foo", (object,), {"v1":123, "func": lamba self: 999})
 ```
 
+- 基于类可以实例化对象。
+
+- type也可以创建类。
+
+  - 默认 type
+
+    ```python
+    class type:
+        def __init__(self):
+            在空值初始化数据
+        def __new__(self):
+            创建->创建类
+    ```
+
+  - 自定义 继承type
+
+    ```python
+    class MyType(type):
+        def __new__(self):
+            super().__new__()
+    ```
+
+- 如何基于MyType创建类呢？
+
+  
+
 
 
 ## 序列化器
