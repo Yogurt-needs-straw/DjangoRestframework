@@ -521,3 +521,7 @@ Foo = type("Foo", (object,), {"v1":123, "func": lamba self: 999})
 
 - 使用
 - 源码
+
+
+
+none
