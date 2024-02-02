@@ -514,6 +514,10 @@ Foo = type("Foo", (object,), {"v1":123, "func": lamba self: 999})
 - 如何基于MyType创建类呢？
 
   
+  
+- 类中获取父类中指定了metaclass，全部都是有metaclass创建的类
+
+  
 
 
 
