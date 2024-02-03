@@ -523,9 +523,90 @@ Foo = type("Foo", (object,), {"v1":123, "func": lamba self: 999})
 
 ## 序列化器
 
-- 使用
-- 源码
+### 序列化数据
+
+#### Serializer
+
+```python
+from django.db import models
+
+
+class Role(models.Model):
+    title = models.CharField(verbose_name="标题", max_length=32)
+    order = models.IntegerField(verbose_name="顺序")
+```
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from api import models
+
+
+class InfoSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    order = serializers.IntegerField()
+
+
+class InfoView(APIView):
+    def get(self, request):
+        # 1.数据库获取多条数据
+        # queryset = models.Role.objects.all()
+        # ser = InfoSerializer(instance=queryset, many=True)
+
+        # 2.数据库获取单条数据
+        instance = models.Role.objects.all().first()
+        ser = InfoSerializer(instance=instance, many=False)
+        
+        print(type(ser.data), ser.data)
+        return Response(ser.data)
+
+```
 
 
 
-none
+#### ModelSerializer
+
+```python
+from django.db import models
+
+
+class Role(models.Model):
+    title = models.CharField(verbose_name="标题", max_length=32)
+    order = models.IntegerField(verbose_name="顺序")
+```
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from api import models
+
+
+class InfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Role
+        # fields = "__all__"
+        # fields = ['id', 'title', 'order']
+        exclude = ["id"]
+
+
+class InfoView(APIView):
+    def get(self, request):
+        # 1.数据库获取多条数据
+        # queryset = models.Role.objects.all()
+        # ser = InfoSerializer(instance=queryset, many=True)
+
+        # 2.数据库获取单条数据
+        instance = models.Role.objects.all().first()
+        ser = InfoSerializer(instance=instance, many=False)
+
+        print(type(ser.data), ser.data)
+        return Response(ser.data)
+```
+
+很显然，如果要对数据表中的字段进行序列化，使用ModelModelSerializer是要比Serializer更简洁一些的。
+
+
+
