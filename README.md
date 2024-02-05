@@ -487,6 +487,16 @@ class UserView(APIView):
 # 创建类：方式2
 # 类名 = type("类名", (父类,), {成员})
 Foo = type("Foo", (object,), {"v1":123, "func": lamba self: 999})
+
+
+
+object,所有类的基类（公共功能，都写在这里面）
+class Foo(object):
+    pass
+
+obj = Foo()
+v1 = obj.__str__() #<__main__.Foo object at Ox12xxx>
+print(v1)
 ```
 
 - 基于类可以实例化对象。
@@ -610,4 +620,3 @@ class InfoView(APIView):
 
 
 
-123
