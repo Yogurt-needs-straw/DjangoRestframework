@@ -523,13 +523,9 @@ print(v1)
 
 - 如何基于MyType创建类呢？
 
-  
-  
 - 类中获取父类中指定了metaclass，全部都是有metaclass创建的类
 
   
-
-
 
 ## 序列化器
 
