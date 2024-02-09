@@ -614,5 +614,5 @@ class InfoView(APIView):
 
 很显然，如果要对数据表中的字段进行序列化，使用ModelModelSerializer是要比Serializer更简洁一些的。
 
-
+year
 
