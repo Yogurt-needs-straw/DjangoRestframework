@@ -11,6 +11,9 @@ class UserInfo(models.Model):
     # 临时方式、jwt
     token = models.CharField(verbose_name="TOKEN", max_length=64, null=True, blank=True)
 
-
+class Depart(models.Model):
+    title = models.CharField(verbose_name="部门", max_length=32)
+    order = models.IntegerField(verbose_name="顺序", )
+    count = models.IntegerField(verbose_name="人数", )
 
 

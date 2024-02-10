@@ -157,3 +157,12 @@ class ImgView(APIView):
         print(request.data)
 
         return Response("OK")
+
+
+class DepartView(APIView):
+    def get(self, request, *args, **kwargs):
+        # 1.数据库中获取数据
+
+        # 2.转换为JSON格式
+
+        # 3.返回给用户

@@ -529,6 +529,8 @@ print(v1)
 
 ## 序列化器
 
+从数据库获取QuerySet或数据对象 —> JSON
+
 ### 序列化数据
 
 #### Serializer
@@ -614,5 +616,5 @@ class InfoView(APIView):
 
 很显然，如果要对数据表中的字段进行序列化，使用ModelModelSerializer是要比Serializer更简洁一些的。
 
-year
+
 

@@ -31,4 +31,6 @@ urlpatterns = [
 
     path('api/<str:version>/img/', views.ImgView.as_view(), name='img'),
 
+    path('api/<str:version>/depart/', views.DepartView.as_view(), name='depart'),
+
 ]
