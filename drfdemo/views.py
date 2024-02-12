@@ -6,6 +6,7 @@ from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from rest_framework.versioning import QueryParameterVersioning, URLPathVersioning, AcceptHeaderVersioning
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import serializers
 
 from drfdemo import models
 from drfdemo.per import BossPermission, UserPermission, ManagerPermission
@@ -159,10 +160,21 @@ class ImgView(APIView):
         return Response("OK")
 
 
+class DepartSerializer(serializers.Serializer):
+    title = serializers.CharField()
+    count = serializers.IntegerField()
+
 class DepartView(APIView):
+    # 不需要认证，直接访问即可
+    authentication_classes = []
+
     def get(self, request, *args, **kwargs):
         # 1.数据库中获取数据
+        depart_object = models.Depart.objects.all().first()
 
         # 2.转换为JSON格式
+        ser = DepartSerializer(instance=depart_object)
+        print(ser.data)
 
         # 3.返回给用户
+        return Response("OK")
