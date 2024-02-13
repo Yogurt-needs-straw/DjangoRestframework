@@ -177,4 +177,6 @@ class DepartView(APIView):
         print(ser.data)
 
         # 3.返回给用户
-        return Response("OK")
+        content = {"status": True, "data": ser.data}
+        return Response(content)
+
