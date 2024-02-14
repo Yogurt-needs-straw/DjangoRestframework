@@ -170,10 +170,11 @@ class DepartView(APIView):
 
     def get(self, request, *args, **kwargs):
         # 1.数据库中获取数据
-        depart_object = models.Depart.objects.all().first()
+        queryset = models.Depart.objects.all()
 
         # 2.转换为JSON格式
-        ser = DepartSerializer(instance=depart_object)
+        # queryset多个结果 添加many属性
+        ser = DepartSerializer(instance=queryset, many=True)
         print(ser.data)
 
         # 3.返回给用户
