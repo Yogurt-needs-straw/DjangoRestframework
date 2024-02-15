@@ -159,10 +159,16 @@ class ImgView(APIView):
 
         return Response("OK")
 
+# serializers.Serializer 方式
+# class DepartSerializer(serializers.Serializer):
+#     title = serializers.CharField()
+#     count = serializers.IntegerField()
 
-class DepartSerializer(serializers.Serializer):
-    title = serializers.CharField()
-    count = serializers.IntegerField()
+# serializers.ModelSerializer 方式
+class DepartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Depart
+        fields = "__all__"
 
 class DepartView(APIView):
     # 不需要认证，直接访问即可
