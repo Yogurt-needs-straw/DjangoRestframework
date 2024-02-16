@@ -187,3 +187,11 @@ class DepartView(APIView):
         content = {"status": True, "data": ser.data}
         return Response(content)
 
+
+class UserView2(APIView):
+    def get(self, request, *args, **kwargs):
+        # 1.获取数据
+        # 2.序列化
+        # 3.返回
+
+    pass

@@ -33,4 +33,6 @@ urlpatterns = [
 
     path('api/<str:version>/depart/', views.DepartView.as_view(), name='depart'),
 
+    path('api/<str:version>/user/', views.UserView2.as_view()),
+
 ]
