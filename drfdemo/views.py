@@ -1,4 +1,7 @@
+import datetime
 import uuid
+
+from django.utils import timezone
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.negotiation import DefaultContentNegotiation
@@ -187,11 +190,35 @@ class DepartView(APIView):
         content = {"status": True, "data": ser.data}
         return Response(content)
 
+# 序列化类
+class UserSerializer(serializers.ModelSerializer):
+    gender_text = serializers.CharField(source="get_gender_display")
+
+    # 展示外键关联内容
+    depart = serializers.CharField(source="depart.title")
+
+    # 时间序列化器
+    ctime = serializers.DateTimeField(format="%Y-%m-%d")
+
+    class Meta:
+        model = models.UserInfo2
+        # fields = "__all__"
+        fields = ["name", "age", "gender", "gender_text", "depart", "ctime"]
 
 class UserView2(APIView):
+    # 不需要认证，直接访问即可
+    authentication_classes = []
+
     def get(self, request, *args, **kwargs):
+
+        models.UserInfo2.objects.all().update(ctime=timezone.now())
+
         # 1.获取数据
+        queryset = models.UserInfo2.objects.all()
         # 2.序列化
+        ser = UserSerializer(instance=queryset, many=True)
         # 3.返回
+        content = {"status": True, "data": ser.data}
+        return Response(content)
 
     pass

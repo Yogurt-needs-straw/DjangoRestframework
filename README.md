@@ -618,3 +618,53 @@ class InfoView(APIView):
 
 
 
+#### 字段和参数
+
+在`ModelModelSerializer`和`Serializer`中都可以自定义字段，并传入一些相关参数。
+
+```python
+from django.db import models
+
+
+class Role(models.Model):
+    title = models.CharField(verbose_name="标题", max_length=32)
+    order = models.IntegerField(verbose_name="顺序")
+
+
+class UserInfo(models.Model):
+    name = models.CharField(verbose_name="姓名", max_length=32)
+    gender = models.SmallIntegerField(verbose_name="性别", choices=((1, "男"), (2, "女")))
+    role = models.ForeignKey(verbose_name="角色", to="Role", on_delete=models.CASCADE)
+    ctime = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
+```
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from api import models
+
+class InfoSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(source="get_gender_display")
+    role = serializers.CharField(source="role.title")
+    ctime = serializers.DateTimeField(format="%Y-%m-%d")
+    other_name = serializers.CharField(source="name")
+    mine = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.UserInfo
+        fields = ['id', 'name', 'gender', "role", 'ctime', "other_name", "mine"]
+    
+    def get_mine(self, obj):
+        return "x-x-{}".format(obj.name)
+
+class InfoView(APIView):
+    def get(self, request):
+        queryset = models.UserInfo.objects.all()
+        ser = InfoSerializer(instance=queryset, many=True)
+        print(type(ser.data), ser.data)
+        return Response(ser.data)
+```
+
+![image-20210827084403453](readme_img/image-20220917161121853.png)
+
