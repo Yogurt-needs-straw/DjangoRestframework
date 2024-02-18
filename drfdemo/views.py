@@ -200,10 +200,16 @@ class UserSerializer(serializers.ModelSerializer):
     # 时间序列化器
     ctime = serializers.DateTimeField(format="%Y-%m-%d")
 
+    # 自定义序列化
+    xxx = serializers.SerializerMethodField()
+
     class Meta:
         model = models.UserInfo2
         # fields = "__all__"
-        fields = ["name", "age", "gender", "gender_text", "depart", "ctime"]
+        fields = ["name", "age", "gender", "gender_text", "depart", "ctime", "xxx"]
+
+    def get_xxx(self, obj):
+        return obj.name
 
 class UserView2(APIView):
     # 不需要认证，直接访问即可
@@ -221,4 +227,3 @@ class UserView2(APIView):
         content = {"status": True, "data": ser.data}
         return Response(content)
 
-    pass
