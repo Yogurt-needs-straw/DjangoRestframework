@@ -209,7 +209,15 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["name", "age", "gender", "gender_text", "depart", "ctime", "xxx"]
 
     def get_xxx(self, obj):
-        return obj.name
+
+        # [Tag对象,.....]
+        result = []
+        queryset = obj.tags.all()
+        print(queryset)
+        for tag in queryset:
+            result.append({"id": tag.id, "caption":tag.caption})
+
+        return result
 
 class UserView2(APIView):
     # 不需要认证，直接访问即可

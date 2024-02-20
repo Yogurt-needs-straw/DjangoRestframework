@@ -25,8 +25,8 @@ class UserInfo2(models.Model):
 
     gender = models.SmallIntegerField(verbose_name="性别", choices=((1, "男"), (2, "女")))
     depart = models.ForeignKey(verbose_name="部门", to="Depart", on_delete=models.CASCADE)
-    ctime = models.DateTimeField(verbose_name="时间", auto_now_add=True )
+    ctime = models.DateTimeField(verbose_name="时间", auto_now_add=True)
 
-    tag = models.ManyToManyField(verbose_name="标签", to="Tag")
+    tags = models.ManyToManyField(verbose_name="标签", to="Tag")
 
 
