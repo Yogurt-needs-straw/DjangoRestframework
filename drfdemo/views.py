@@ -190,11 +190,19 @@ class DepartView(APIView):
         content = {"status": True, "data": ser.data}
         return Response(content)
 
+# 可仅针对tag序列化
+class Depart(serializers.ModelSerializer):
+    class Meta:
+        models = models.Depart
+        fields = "__all__"
+
 # 序列化类
 class UserSerializer(serializers.ModelSerializer):
     gender_text = serializers.CharField(source="get_gender_display")
 
     # 展示外键关联内容
+    # 可通过序列化类实现
+    # depart = Depart()  如果对象是多个：Depart(many=True)
     depart = serializers.CharField(source="depart.title")
 
     # 时间序列化器
