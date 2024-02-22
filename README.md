@@ -668,3 +668,221 @@ class InfoView(APIView):
 
 ![image-20210827084403453](readme_img/image-20220917161121853.png)
 
+
+
+#### 3.1.6 底层实现原理（扩展）
+
+声明：掌握上述知识点，已经可以让你完成工作中常见的任务。接下来的知识点，只是作为扩展，可以略过。
+
+##### 1.元类
+
+对象是通过类实例化出来的。
+
+```python
+class Foo(object):
+    pass
+
+# 第1步：调用Foo的__new__方法创建空对象。
+# 第2步：调用Foo的__init__方法对对象进行初始化。
+obj = Foo()
+```
+
+
+
+类是谁创建的？是由type创建出来的（默认）。
+
+```python
+class Foo(object):
+    v1 = 123
+    
+    def func(self):
+        return 666
+```
+
+```python
+Foo = type("Foo",(object,),{ "v1":123, "func":lambda self:666 })
+```
+
+
+
+定义类时加入metaclass指定当前类的创造者。
+
+```python
+# 由type创建Foo类型
+class Foo(object):
+    pass
+```
+
+```python
+# 由`东西` 创建Foo类型
+class Foo(object,metaclass=东西):
+    pass
+```
+
+
+
+指定元类(metaclass) 来创建类。
+
+```python
+class MyType(type):
+    def __new__(cls, *args, **kwargs):
+        new_cls = super().__new__(cls, *args, **kwargs)
+        print("创建类：", new_cls)
+        return new_cls
+
+class Foo(metaclass=MyType):
+    pass
+```
+
+```python
+class MyType(type):
+    def __init__(self, *args, **kwargs):
+        print("第2步：初始化类成员：", args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+    def __new__(cls, *args, **kwargs):
+        new_cls = super().__new__(cls, *args, **kwargs)
+        print("第1步：创建类：", new_cls)
+        return new_cls
+
+
+class Foo(metaclass=MyType):
+    v1 = 123
+
+    def func(self):
+        pass
+```
+
+```python
+class MyType(type):
+    def __init__(cls, *args, **kwargs):
+        print("第2步：初始化类成员：", args, **kwargs)
+        super().__init__(*args, **kwargs)
+
+    def __new__(cls, *args, **kwargs):
+        new_cls = super().__new__(cls, *args, **kwargs)
+        print("第1步：创建类：", new_cls)
+        return new_cls
+
+    def __call__(cls, *args, **kwargs):
+        print("第3步：创建对象&初始化对象", cls)
+
+        # 1.调用自己那个类的 __new__ 方法去创建对象
+        new_object = cls.__new__(cls, *args, **kwargs)
+
+        # 2.调用你自己那个类 __init__放发去初始化
+        cls.__init__(new_object, *args, **kwargs)
+        return new_object
+
+
+class Foo(metaclass=MyType):
+    v1 = 123
+
+    def func(self):
+        pass
+
+
+obj = Foo()
+```
+
+##### 2.实例化字段对象
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from api import models
+
+
+class InfoSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    title = serializers.CharField()
+    order = serializers.IntegerField
+```
+
+对于上述代码，在类`InfoSerializer`创建之前，其内部`id、title、order`字段会先进行实例化对象。
+
+而这些`IntegerField`、`CharField`等字段的继承关系如下：
+
+```python
+class Field:
+    _creation_counter = 0
+    
+class IntegerField(Field):
+    pass
+
+class CharField(Field):
+    pass
+
+class DateTimeField(Field):
+    pass
+```
+
+
+
+在`IntegerField`、`CharField`等字段实例化时，内部会维护一个计数器，来表示实例化的先后顺序。
+
+```python
+class Field:
+    _creation_counter = 0
+	def __init__(self, *, read_only=False...):
+        self._creation_counter = Field._creation_counter
+        Field._creation_counter += 1
+        
+class IntegerField(Field):
+	def __init__(self, **kwargs):
+        ...
+        super().__init__(**kwargs)
+
+class CharField(Field):
+	def __init__(self, **kwargs):
+        ...
+        super().__init__(**kwargs)
+```
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from api import models
+
+
+class InfoSerializer(serializers.Serializer):
+    id = serializers.IntegerField()  # 对象，内部_creation_counter=0
+    title = serializers.CharField()  # 对象，内部_creation_counter=1
+    order = serializers.IntegerField # 对象，内部_creation_counter=2
+```
+
+注意：后续会通过这个计数器排序，以此来实现字段的先后执行。
+
+
+
+##### 3.序列化类的创建
+
+```python
+class SerializerMetaclass(type):
+	def __new__(cls, name, bases, attrs):
+        attrs['_declared_fields'] = cls._get_declared_fields(bases, attrs)
+        return super().__new__(cls, name, bases, attrs)
+```
+
+```python
+class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
+	...
+
+class ModelSerializer(Serializer):
+	...
+    
+class RoleSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(source="get_gender_display")
+    class Meta:
+        model = models.Role
+        fields = ["id", 'title',"gender"]
+```
+
+注意：父类中指定metaclass，子类也会由此metaclass来创建类。
+
+
+
+
+
