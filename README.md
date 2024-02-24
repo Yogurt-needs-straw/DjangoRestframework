@@ -854,36 +854,3 @@ class InfoSerializer(serializers.Serializer):
 ```
 
 注意：后续会通过这个计数器排序，以此来实现字段的先后执行。
-
-
-
-##### 3.序列化类的创建
-
-```python
-class SerializerMetaclass(type):
-	def __new__(cls, name, bases, attrs):
-        attrs['_declared_fields'] = cls._get_declared_fields(bases, attrs)
-        return super().__new__(cls, name, bases, attrs)
-```
-
-```python
-class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
-	...
-
-class ModelSerializer(Serializer):
-	...
-    
-class RoleSerializer(serializers.ModelSerializer):
-    gender = serializers.CharField(source="get_gender_display")
-    class Meta:
-        model = models.Role
-        fields = ["id", 'title',"gender"]
-```
-
-注意：父类中指定metaclass，子类也会由此metaclass来创建类。
-
-
-
-
-
-123
