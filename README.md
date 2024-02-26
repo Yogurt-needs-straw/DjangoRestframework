@@ -857,4 +857,12 @@ class InfoSerializer(serializers.Serializer):
 
 
 
-none
+**3.序列化类的创建**
+
+```python
+class SerializerMetaclass(type):
+	def __new__(cls, name, bases, attrs):
+        attrs['_declared_fields'] = cls._get_declared_fields(bases, attrs)
+        return super().__new__(cls, name, bases, attrs)
+```
+
