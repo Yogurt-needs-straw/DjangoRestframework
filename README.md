@@ -866,3 +866,18 @@ class SerializerMetaclass(type):
         return super().__new__(cls, name, bases, attrs)
 ```
 
+```python
+class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
+	...
+
+class ModelSerializer(Serializer):
+	...
+    
+class RoleSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(source="get_gender_display")
+    class Meta:
+        model = models.Role
+        fields = ["id", 'title',"gender"]
+```
+
+注意：父类中指定metaclass，子类也会由此metaclass来创建类。
