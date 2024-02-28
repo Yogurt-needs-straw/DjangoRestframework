@@ -881,3 +881,48 @@ class RoleSerializer(serializers.ModelSerializer):
 ```
 
 注意：父类中指定metaclass，子类也会由此metaclass来创建类。
+
+
+
+##### 4._declared_fields
+
+在创建类之前，元类的`__new__`方法在类成员中添加了一个`_declared_fields`（类变量）。
+
+```python
+class SerializerMetaclass(type):
+    @classmethod
+    def _get_declared_fields(cls, bases, attrs):
+        # 1.循环获取类中定义所有的成员（类变量、方法），筛选出继承自Fields的类的字段对象。
+        # 注意：同时会将字段在当前类成员中移除
+        fields = [
+            (field_name, attrs.pop(field_name)) 
+            for field_name, obj in list(attrs.items())
+            if isinstance(obj, Field)
+        ]
+        # 2.根据字段的_creation_counter排序
+        fields.sort(key=lambda x: x[1]._creation_counter)
+
+        # Ensures a base class field doesn't override cls attrs, and maintains
+        # field precedence when inheriting multiple parents. e.g. if there is a
+        # class C(A, B), and A and B both define 'field', use 'field' from A.
+        known = set(attrs)
+
+        def visit(name):
+            known.add(name)
+            return name
+		
+        # 3.读取父类中的_declared_fields字段（父类先于子类创建、序列化类支持继承）
+        base_fields = [
+            (visit(name), f)
+            for base in bases if hasattr(base, '_declared_fields')
+            for name, f in base._declared_fields.items() if name not in known
+        ]
+		
+        # 4.将父类和子类中的字段打包返回，赋值给当前类的_declared_fields
+        return OrderedDict(base_fields + fields)
+
+    def __new__(cls, name, bases, attrs):
+        attrs['_declared_fields'] = cls._get_declared_fields(bases, attrs)
+        return super().__new__(cls, name, bases, attrs)
+```
+
