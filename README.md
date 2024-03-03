@@ -926,8 +926,45 @@ class SerializerMetaclass(type):
         return super().__new__(cls, name, bases, attrs)
 ```
 
+```python
+class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
+	...
 
+class ModelSerializer(Serializer):
+	...
+    
+class RoleSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(source="get_gender_display")
+    class Meta:
+        model = models.Role
+        fields = ["id", 'title',"gender"]
+```
 
+所以，当类序列化类加载完毕后，类中成员：
 
+- 剔除，字段对象。
 
-none
+  ```python
+  RoleSerializer.gender   不存在
+  ```
+
+- 新增，_declared_fields，是`OrderedDict`类型且内部包含所有字段。
+
+  ```python
+  RoleSerializer._declared_fields = {
+      "gender": CharField对象
+  }
+  ```
+
+- 其他，保留原样。
+
+  ```python
+  RoleSerializer.Meta
+  ```
+
+  
+
+##### 5.创建序列化类对象
+
+在视图的方法，使用序列化类对 orm 获取的QuerySet或对象进行序列化时，需要先进行初始化类的对象。
+
