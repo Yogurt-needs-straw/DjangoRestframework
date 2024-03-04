@@ -968,3 +968,10 @@ class RoleSerializer(serializers.ModelSerializer):
 
 在视图的方法，使用序列化类对 orm 获取的QuerySet或对象进行序列化时，需要先进行初始化类的对象。
 
+```python
+class SerializerMetaclass(type):
+	def __new__(cls, name, bases, attrs):
+        attrs['_declared_fields'] = cls._get_declared_fields(bases, attrs)
+        return super().__new__(cls, name, bases, attrs)
+```
+
