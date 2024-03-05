@@ -975,3 +975,75 @@ class SerializerMetaclass(type):
         return super().__new__(cls, name, bases, attrs)
 ```
 
+```python
+class BaseSerializer(Field):
+    def __init__(self, instance=None, data=empty, **kwargs):
+        self.instance = instance
+        if data is not empty:
+            self.initial_data = data
+        self.partial = kwargs.pop('partial', False)
+        self._context = kwargs.pop('context', {})
+        kwargs.pop('many', None)
+        super().__init__(**kwargs)
+
+    def __new__(cls, *args, **kwargs):
+        if kwargs.pop('many', False):
+            # 调用 many_init 方法获取其他对象，返回
+            return cls.many_init(*args, **kwargs)
+
+        # 创建当前类的空对象，返回
+        return super().__new__(cls, *args, **kwargs)
+
+
+    @classmethod
+    def many_init(cls, *args, **kwargs):
+		...
+        child_serializer = cls(*args, **kwargs)
+        list_kwargs = {
+            'child': child_serializer,
+        }
+        meta = getattr(cls, 'Meta', None)
+        list_serializer_class = getattr(meta, 'list_serializer_class', ListSerializer)
+        return list_serializer_class(*args, **list_kwargs)
+    
+class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
+	...
+
+class ModelSerializer(Serializer):
+	...
+    
+class RoleSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(source="get_gender_display")
+    class Meta:
+        model = models.Role
+        fields = ["id", 'title',"gender"]
+```
+
+```python
+instance = models.UserInfo.objects.all().first()
+
+# 实例化对象，内部会：先执行__new__、再执行__init__
+# 第1步：__new__
+# 	默认：many=True，返回ListSerializer对象； many=False，返回当前类InfoSerializer的对象。
+# 第2步：__init__
+#   此处就要根据__new__返回的不同对象，执行不同对象的__init__方法。
+# =====> 思考题：你觉得他为什么要这么设计？ <======
+ser = InfoSerializer(instance=instance, many=False)
+
+# 获取序列化后的值
+ser.data
+```
+
+##### 6.序列化-当前类
+
+```python
+class Field:
+    def get_attribute(self, instance):
+        # source_attrs=[]  或 source_attrs=["xx","xx","xxx"]
+		return get_attribute(instance, self.source_attrs)
+    
+class CharField(Field):
+    def to_representation(self, value):
+        return str(value)
+```
+
