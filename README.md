@@ -1047,3 +1047,61 @@ class CharField(Field):
         return str(value)
 ```
 
+```python
+class BaseSerializer(Field):
+    @property
+    def data(self):
+        # 第2步
+        if not hasattr(self, '_data'):
+            if self.instance is not None and not getattr(self, '_errors', None):
+                # 第3步：用于序列化给对象进行初始化用的。
+                self._data = self.to_representation(self.instance)
+            elif hasattr(self, '_validated_data') and not getattr(self, '_errors', None):
+                # 这里是用于对请求校验时，才触发执行的。
+                self._data = self.to_representation(self.validated_data)
+            else:
+                # 这个是用于给Serializer，不传对象而传入initial_data参数用的。
+                self._data = self.get_initial()
+        return self._data
+
+class Serializer(BaseSerializer, metaclass=SerializerMetaclass):
+    @property
+    def data(self):
+        # 第1步
+        ret = super().data
+        return ReturnDict(ret, serializer=self)
+	
+    def to_representation(self, instance):
+        # 第4步
+        ret = OrderedDict()
+        
+        # 第5步：获取 _declared_fields 中所有非write_only字段，即：用于序列化的字段。
+        #       如果是ModelSerializer，也会去寻找其Meta中定义的字段 + 字段的bind方法
+        fields = self._readable_fields
+
+        for field in fields:
+            try:
+                # 第5步：调用字段对象中的 get_attribute 方法
+                attribute = field.get_attribute(instance)
+            except SkipField:
+                continue
+
+            check_for_none = attribute.pk if isinstance(attribute, PKOnlyObject) else attribute
+            if check_for_none is None:
+                ret[field.field_name] = None
+            else:
+                # 第6步：调用字段对象中的 to_representation 方法
+                ret[field.field_name] = field.to_representation(attribute)
+
+        return ret
+    
+class ModelSerializer(Serializer):
+	...
+    
+class RoleSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(source="get_gender_display")
+    class Meta:
+        model = models.Role
+        fields = ["id", 'title',"gender"]
+```
+
