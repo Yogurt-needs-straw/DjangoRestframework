@@ -1105,3 +1105,11 @@ class RoleSerializer(serializers.ModelSerializer):
         fields = ["id", 'title',"gender"]
 ```
 
+```python
+instance = models.UserInfo.objects.all().first()
+ser = InfoSerializer(instance=instance, many=False)
+
+# 创建InfoSerializer类的对象，获取序列化后的值
+ser.data
+```
+
