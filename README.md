@@ -1113,3 +1113,37 @@ ser = InfoSerializer(instance=instance, many=False)
 ser.data
 ```
 
+
+
+**7.序列化-ListSerializer**
+
+```python
+class BaseSerializer(Field):
+    @property
+    def data(self):
+        if not hasattr(self, '_data'):
+            if self.instance is not None and not getattr(self, '_errors', None):
+                # 这里
+                self._data = self.to_representation(self.instance)
+            elif hasattr(self, '_validated_data') and not getattr(self, '_errors', None):
+                self._data = self.to_representation(self.validated_data)
+            else:
+                self._data = self.get_initial()
+        return self._data
+
+class ListSerializer(BaseSerializer):
+	@property
+    def data(self):
+        ret = super().data
+        return ReturnList(ret, serializer=self)
+    
+    def to_representation(self, data):
+        iterable = data.all() if isinstance(data, models.Manager) else data
+        
+        return [
+            # 循环，利用序列化类去处理每个对象
+            self.child.to_representation(item) for item in iterable
+        ]
+
+```
+
