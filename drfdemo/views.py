@@ -243,3 +243,25 @@ class UserView2(APIView):
         content = {"status": True, "data": ser.data}
         return Response(content)
 
+
+class DepartSerializer2(serializers.Serializer):
+    # required 是否为必填项
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+class DepartView2(APIView):
+
+    def post(self, request, *args, **kwargs):
+        # 1.获取原始数据
+        # request.data
+
+        # 2.校验
+        ser = DepartSerializer(data=request.data)
+        if ser.is_valid():
+            print(ser.validated_data)
+        else:
+            print(ser.errors)
+
+
+
+
