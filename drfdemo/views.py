@@ -262,6 +262,8 @@ class DepartView2(APIView):
         else:
             print(ser.errors)
 
+        return Response("...")
+
 
 
 

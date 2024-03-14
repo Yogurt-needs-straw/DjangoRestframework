@@ -1161,3 +1161,32 @@ class ListSerializer(BaseSerializer):
 
 
 
+### 3.2 数据校验
+
+对用户发来的请求数据进行校验。
+
+
+
+#### 3.2.1 内置校验
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+
+
+class InfoSerializer(serializers.Serializer):
+    title = serializers.CharField(required=True, max_length=20, min_length=6)
+    order = serializers.IntegerField(required=False, max_value=100, min_value=10)
+    level = serializers.ChoiceField(choices=[("1", "高级"), (2, "中级")])
+
+
+class InfoView(APIView):
+    def post(self, request):
+        ser = InfoSerializer(data=request.data)
+        if ser.is_valid():
+            return Response(ser.validated_data)
+        else:
+            return Response(ser.errors)
+```
+
