@@ -1190,3 +1190,25 @@ class InfoView(APIView):
             return Response(ser.errors)
 ```
 
+#### 3.2.2 正则校验
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from django.core.validators import RegexValidator, EmailValidator
+
+
+class InfoSerializer(serializers.Serializer):
+    title = serializers.CharField(required=True, max_length=20, min_length=6)
+    order = serializers.IntegerField(required=False, max_value=100, min_value=10)
+    level = serializers.ChoiceField(choices=[("1", "高级"), (2, "中级")])
+
+    # email = serializers.EmailField()
+    email = serializers.CharField(validators=[EmailValidator(message="邮箱格式错误")])
+
+    more = serializers.CharField(validators=[RegexValidator(r"\d+", message="格式错误")])
+
+    code = serializers.CharField()
+```
+
