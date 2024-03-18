@@ -1,6 +1,7 @@
 import datetime
 import uuid
 
+from django.core.validators import RegexValidator
 from django.utils import timezone
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BaseAuthentication
@@ -9,7 +10,7 @@ from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from rest_framework.versioning import QueryParameterVersioning, URLPathVersioning, AcceptHeaderVersioning
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 
 from drfdemo import models
 from drfdemo.per import BossPermission, UserPermission, ManagerPermission
@@ -246,8 +247,25 @@ class UserView2(APIView):
 
 class DepartSerializer2(serializers.Serializer):
     # required 是否为必填项
-    username = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
+    # username = serializers.CharField(required=True)
+    # password = serializers.CharField(required=True)
+
+    title = serializers.CharField(required=True, max_length=20, min_length=6)
+    order = serializers.IntegerField(required=False, max_value=100, min_value=10)
+    level = serializers.ChoiceField(choices=[("1", "高级"), (2, "中级")])
+
+    email = serializers.CharField(validators=[RegexValidator(message="邮箱格式错误")])
+
+    # 钩子函数 校验数据 对单个数据进行校验
+    def validate_email(self, value):
+        if len(value) > 6:
+            raise exceptions.ValidationError("字典钩子校验失败")
+        return value
+
+    # 整体钩子
+    def validate(self, attrs):
+        print("validate=", attrs)
+        raise exceptions.ValidationError("全局钩子校验失败")
 
 class DepartView2(APIView):
 
@@ -258,9 +276,9 @@ class DepartView2(APIView):
         # 2.校验
         ser = DepartSerializer(data=request.data)
         if ser.is_valid():
-            print(ser.validated_data)
+            print("视图", ser.validated_data)
         else:
-            print(ser.errors)
+            print("视图", ser.errors)
 
         return Response("...")
 
