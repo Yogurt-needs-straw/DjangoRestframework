@@ -166,4 +166,7 @@ REST_FRAMEWORK = {
     # "DEFAULT_PERMISSION_CLASSES":[
     #     "drfdemo.per.MyPermission"
     # ]
+
+    # 全局校验配置
+    # "NON_FIELD_ERRORS_KEY":"xxxx"
 }

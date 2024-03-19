@@ -265,9 +265,12 @@ class DepartSerializer2(serializers.Serializer):
     # 整体钩子
     def validate(self, attrs):
         print("validate=", attrs)
+        # api_setting.NON_FIELD_ERRORS_KEY
         raise exceptions.ValidationError("全局钩子校验失败")
 
 class DepartView2(APIView):
+    # 不需要认证，直接访问即可
+    authentication_classes = []
 
     def post(self, request, *args, **kwargs):
         # 1.获取原始数据
