@@ -268,6 +268,19 @@ class DepartSerializer2(serializers.Serializer):
         # api_setting.NON_FIELD_ERRORS_KEY
         raise exceptions.ValidationError("全局钩子校验失败")
 
+class DepartModelSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = models.Depart
+        fiels = ["title", "order", "count"]
+
+        # 校验条件
+        extra_kwargs = {
+            "title": {"max_value": 5, "min_value": 1},
+            "order": {"min_value": 5}
+        }
+
+
+
 class DepartView2(APIView):
     # 不需要认证，直接访问即可
     authentication_classes = []
@@ -277,7 +290,8 @@ class DepartView2(APIView):
         # request.data
 
         # 2.校验
-        ser = DepartSerializer(data=request.data)
+        # ser = DepartSerializer(data=request.data)
+        ser = DepartModelSerializer2(data=request.data)
         if ser.is_valid():
             print("视图", ser.validated_data)
         else:
