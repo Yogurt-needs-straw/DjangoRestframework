@@ -297,6 +297,8 @@ class DepartView2(APIView):
         else:
             print("视图", ser.errors)
 
+        # ser = DepartSerializer(data=request.data)
+        # ser.is_valid(raise_exception=True) # 成功, 抛出异常 raise ValidationError(self.error)
         return Response("...")
 
 
