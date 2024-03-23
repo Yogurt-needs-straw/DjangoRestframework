@@ -302,5 +302,30 @@ class DepartView2(APIView):
         return Response("...")
 
 
+class UsModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.UserInfo2
+        fields = ["name", "age", "gender", "depart", "tags"]
+
+
+class UsView(APIView):
+    # 不需要认证，直接访问即可
+    authentication_classes = []
+
+    def post(self, request, *args, **kwargs):
+        # 1.获取原始数据
+        # request.data
+
+        # 2.校验
+        ser = UsModelSerializer(data=request.data)
+        if ser.is_valid():
+            print("视图", ser.validated_data)
+            ser.save()
+        else:
+            print("视图", ser.errors)
+
+        return Response("...")
+
+
 
 
