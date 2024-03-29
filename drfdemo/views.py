@@ -305,8 +305,13 @@ class DepartView2(APIView):
 class UsModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.UserInfo2
-        fields = ["name", "age", "gender", "depart", "tags"]
+        fields = ["name", "age", "gender", "depart"]
 
+    # 钩子函数 对单个选项校验
+    def validate_depart(self, value):
+        if value.id > 1:
+            return value
+        raise exceptions.ValidationError("部门错误")
 
 class UsView(APIView):
     # 不需要认证，直接访问即可
