@@ -1214,3 +1214,39 @@ class InfoSerializer(serializers.Serializer):
 
 
 
+#### 3.2.3 钩子校验
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from rest_framework import exceptions
+
+
+class InfoSerializer(serializers.Serializer):
+    title = serializers.CharField(required=True, max_length=20, min_length=6)
+    order = serializers.IntegerField(required=False, max_value=100, min_value=10)
+    code = serializers.CharField()
+
+    def validate_code(self, value):
+        print(value)
+        if len(value) > 6:
+            raise exceptions.ValidationError("字段钩子校验失败")
+        return value
+
+    def validate(self, attrs):
+        print("validate=", attrs)
+        # api_settings.NON_FIELD_ERRORS_KEY
+        # raise exceptions.ValidationError("全局钩子校验失败")
+        return attrs
+
+
+class InfoView(APIView):
+    def post(self, request):
+        ser = InfoSerializer(data=request.data)
+        if ser.is_valid():
+            return Response(ser.validated_data)
+        else:
+            return Response(ser.errors)
+```
+
