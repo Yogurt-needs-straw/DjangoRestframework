@@ -1250,3 +1250,163 @@ class InfoView(APIView):
             return Response(ser.errors)
 ```
 
+
+
+#### 3.2.4 Model校验
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from rest_framework import exceptions
+from api import models
+from django.core.validators import RegexValidator
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    more = serializers.CharField(required=True)
+
+    class Meta:
+        model = models.Role
+        fields = ["title", "order", "more"]
+        extra_kwargs = {
+            "title": {"validators": [RegexValidator(r"\d+", message="格式错误")]},
+            "order": {"min_value": 5},
+        }
+
+    def validate_more(self, value):
+        return value
+
+    def validate(self, attrs):
+        return attrs
+
+
+class InfoView(APIView):
+    def post(self, request):
+        ser = RoleSerializer(data=request.data)
+        if ser.is_valid():
+            return Response(ser.validated_data)
+        else:
+            return Response(ser.errors)
+```
+
+
+
+
+
+#### 3.2.5 校验+保存
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from rest_framework import exceptions
+from api import models
+from django.core.validators import RegexValidator
+
+
+class RoleSerializer(serializers.ModelSerializer):
+    more = serializers.CharField(required=True)
+
+    class Meta:
+        model = models.Role
+        fields = ["title", "order", "more"]
+        extra_kwargs = {
+            "title": {"validators": [RegexValidator(r"\d+", message="格式错误")]},
+            "order": {"min_value": 5},
+        }
+
+    def validate_more(self, value):
+        return value
+
+    def validate(self, attrs):
+        return attrs
+
+
+class InfoView(APIView):
+    def post(self, request):
+        ser = RoleSerializer(data=request.data)
+        if ser.is_valid():
+            ser.validated_data.pop("more")
+            instance = ser.save()  # ser.save(v1=123,v2=234)
+            print(instance)
+            return Response(ser.validated_data)
+        else:
+            return Response(ser.errors)
+```
+
+
+
+#### 3.2.6 校验+保存+FK+M2M
+
+![image-20220917204013619](./readme_img/image-20220917204013619.png)
+
+![image-20220917204030432](./readme_img/image-20220917204030432.png)
+
+
+
+```python
+from django.db import models
+
+
+class Role(models.Model):
+    title = models.CharField(verbose_name="标题", max_length=32)
+    order = models.IntegerField(verbose_name="顺序")
+
+
+class Tag(models.Model):
+    caption = models.CharField(verbose_name="名称", max_length=32)
+
+
+class UserInfo(models.Model):
+    name = models.CharField(verbose_name="姓名", max_length=32)
+    gender = models.SmallIntegerField(verbose_name="性别", choices=((1, "男"), (2, "女")))
+    role = models.ForeignKey(verbose_name="角色", to="Role", on_delete=models.CASCADE)
+    ctime = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
+
+    tags = models.ManyToManyField(verbose_name="标签", to="Tag")
+
+```
+
+
+
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from rest_framework import exceptions
+from api import models
+from django.core.validators import RegexValidator
+import datetime
+
+
+class UserInfoSerializer(serializers.ModelSerializer):
+    more = serializers.CharField(required=True)
+
+    class Meta:
+        model = models.UserInfo
+        fields = ["name", "gender", "role", "tags", "more"]
+        extra_kwargs = {
+            "name": {"validators": [RegexValidator(r"n-\d+", message="格式错误")]},
+        }
+
+    def validate_more(self, value):
+        return value
+
+    def validate(self, attrs):
+        return attrs
+
+
+class InfoView(APIView):
+    def post(self, request):
+        ser = UserInfoSerializer(data=request.data)
+        if ser.is_valid():
+            ser.validated_data.pop("more")
+            instance = ser.save(ctime=datetime.datetime.now())
+            print(instance)
+            # return Response(ser.validated_data)
+            return Response("成功")
+        else:
+            return Response(ser.errors)
+```
+
