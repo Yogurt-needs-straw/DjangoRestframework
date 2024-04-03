@@ -1410,3 +1410,11 @@ class InfoView(APIView):
             return Response(ser.errors)
 ```
 
+
+
+#### 3.2.7 钩子create
+
+当执行save时，内部会调用 create 或 update方法，如果想要自定义保存规则，也可以在此处进行处理。
+
+![image-20220918083811336](./readme_img/image-20220918083811336.png)
+
