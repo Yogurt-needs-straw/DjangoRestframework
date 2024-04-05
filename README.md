@@ -1418,3 +1418,21 @@ class InfoView(APIView):
 
 ![image-20220918083811336](./readme_img/image-20220918083811336.png)
 
+
+
+### 3.3 校验+序列化
+
+如果一个请求，即需要做 **请求校验** 又需要做 **序列化** ，怎么搞呢？例如：新增数据。
+
+- 字段，可以通过read_only 、write_only、required 来设定
+- is_valid校验
+- data调用序列化
+
+#### 3.3.1 二合一
+
+![image-20210823210822789](./readme_img/image-20210823210822789.png)
+
+![image-20210823211016050](./readme_img/image-20210823211016050.png)
+
+![image-20210823211041662](./readme_img/image-20210823211041662.png)
+
