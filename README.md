@@ -1436,3 +1436,156 @@ class InfoView(APIView):
 
 ![image-20210823211041662](./readme_img/image-20210823211041662.png)
 
+
+
+```python
+# models.py
+
+from django.db import models
+
+
+class Role(models.Model):
+    """ 角色表 """
+    title = models.CharField(verbose_name="名称", max_length=32)
+
+
+class Department(models.Model):
+    """ 部门表 """
+    title = models.CharField(verbose_name="名称", max_length=32)
+
+
+class UserInfo(models.Model):
+    """ 用户表 """
+    level_choices = ((1, "普通会员"), (2, "VIP"), (3, "SVIP"),)
+    level = models.IntegerField(verbose_name="级别", choices=level_choices, default=1)
+
+    username = models.CharField(verbose_name="用户名", max_length=32)
+    password = models.CharField(verbose_name="密码", max_length=64)
+    age = models.IntegerField(verbose_name="年龄", default=0)
+    email = models.CharField(verbose_name="邮箱", max_length=64, null=True, blank=True)
+    token = models.CharField(verbose_name="TOKEN", max_length=64, null=True, blank=True)
+
+    depart = models.ForeignKey(verbose_name="部门", to="Department", on_delete=models.CASCADE, null=True, blank=True)
+    roles = models.ManyToManyField(verbose_name="角色", to="Role")
+
+```
+
+```python
+# urls.py
+
+from django.urls import path, re_path, include
+from app01 import views
+
+urlpatterns = [
+    path('api/users/', views.UserView.as_view()),
+]
+
+```
+
+```python
+# views.py
+
+from django.core.validators import EmailValidator
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+
+from app01 import models
+
+
+class DepartModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Department
+        fields = ['id', "title"]
+        extra_kwargs = {
+            "id": {"read_only": False},  # 数据验证
+            "title": {"read_only": True}  # 序列化
+        }
+
+
+class RoleModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Role
+        fields = ['id', "title"]
+        extra_kwargs = {
+            "id": {"read_only": False},  # 数据验证
+            "title": {"read_only": True}  # 序列化
+        }
+
+
+class UserModelSerializer(serializers.ModelSerializer):
+    level_text = serializers.CharField(source="get_level_display", read_only=True)
+
+    # Serializer嵌套，不是read_only，一定要自定义create和update，自定义新增和更新的逻辑。
+    depart = DepartModelSerializer(many=False)
+    roles = RoleModelSerializer(many=True)
+
+    extra = serializers.SerializerMethodField(read_only=True)
+    email2 = serializers.EmailField(write_only=True)
+
+    # 数据校验：username、email、email2、部门、角色信息
+    class Meta:
+        model = models.UserInfo
+        fields = [
+            "username", "age", "email", "level_text", "depart", "roles", "extra", "email2"
+        ]
+        extra_kwargs = {
+            "age": {"read_only": True},
+            "email": {"validators": [EmailValidator, ]},
+        }
+
+    def get_extra(self, obj):
+        return 666
+
+    def validate_username(self, value):
+        return value
+
+    # 新增加数据时
+    def create(self, validated_data):
+        """ 如果有嵌套的Serializer，在进行数据校验时，只有两种选择：
+              1. 将嵌套的序列化设置成 read_only
+              2. 自定义create和update方法，自定义新建和更新的逻辑
+            注意：用户端提交数据的格式。
+        """
+        depart_id = validated_data.pop('depart')['id']
+
+        role_id_list = [ele['id'] for ele in validated_data.pop('roles')]
+
+        # 新增用户表
+        validated_data['depart_id'] = depart_id
+        user_object = models.UserInfo.objects.create(**validated_data)
+
+        # 在用户表和角色表的关联表中添加对应关系
+        user_object.roles.add(*role_id_list)
+
+        return user_object
+
+
+class UserView(APIView):
+    """ 用户管理 """
+
+    def get(self, request):
+        """ 添加用户 """
+        queryset = models.UserInfo.objects.all()
+        ser = UserModelSerializer(instance=queryset, many=True)
+        return Response({"code": 0, 'data': ser.data})
+
+    def post(self, request):
+        """ 添加用户 """
+        ser = UserModelSerializer(data=request.data)
+        if not ser.is_valid():
+            return Response({'code': 1006, 'data': ser.errors})
+
+        ser.validated_data.pop('email2')
+
+        instance = ser.save(age=18, password="123", depart_id=1)
+
+        # 新增之后的一个对象（内部调用UserModelSerializer进行序列化）
+        print(instance)
+        # ser = UserModelSerializer(instance=instance, many=False)
+        # ser.data
+
+        return Response({'code': 0, 'data': ser.data})
+
+```
+
