@@ -332,5 +332,26 @@ class UsView(APIView):
         return Response("...")
 
 
+class NbModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.NbUser
+        fields = ["id", "name", "age", "gender"]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            # "gender": {"write_only": True},
+        }
+
+class NbView(APIView):
+    # 不需要认证，直接访问即可
+    authentication_classes = []
+
+    def post(self, reqest, *args, **kwargs):
+        ser = NbModelSerializer(data=reqest.data)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data)
+        else:
+            return Response(ser.errors)
+
 
 

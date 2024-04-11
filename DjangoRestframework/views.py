@@ -142,3 +142,6 @@ class HomeTiView(APIView):
         print(request.version)
 
         return Response("...")
+
+
+
