@@ -341,6 +341,7 @@ class NbModelSerializer(serializers.ModelSerializer):
             # "gender": {"write_only": True},
         }
 
+
 class NbView(APIView):
     # 不需要认证，直接访问即可
     authentication_classes = []
