@@ -331,8 +331,30 @@ class UsView(APIView):
 
         return Response("...")
 
+# 自定义一个字段
+class NbCharField(serializers.IntegerField):
+    def __init__(self, method_name=None, **kwargs):
+        self.method_name = method_name
+
+        super().__init__(**kwargs)
+
+    def bind(self, field_name, parent):
+        # The method name default to 'get_{field_name}'
+        if self.method_name is None:
+            self.method_name = 'xget_{field_name}'.format(field_name=field_name)  #'get_gender'
+
+        super().bind(field_name, parent)
+
+    def get_attribute(self, instance):
+        method = getattr(self.parent, self.method_name)
+        return method(instance)
+
+    def to_representation(self, value):
+        return str(value)
 
 class NbModelSerializer(serializers.ModelSerializer):
+    gender = NbCharField()
+
     class Meta:
         model = models.NbUser
         fields = ["id", "name", "age", "gender"]
@@ -340,6 +362,9 @@ class NbModelSerializer(serializers.ModelSerializer):
             "id": {"read_only": True},
             # "gender": {"write_only": True},
         }
+
+    def xget_gender(self, obj):
+        return obj.get_gender_display()
 
 
 class NbView(APIView):
