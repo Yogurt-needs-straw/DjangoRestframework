@@ -380,4 +380,14 @@ class NbView(APIView):
             return Response(ser.errors)
 
 
+class SbView:
+    # 不需要认证，直接访问即可
+    authentication_classes = []
 
+    def post(self, reqest, *args, **kwargs):
+        ser = SbModelSerializer(data=reqest.data)
+        if ser.is_valid():
+            ser.save()
+            return Response(ser.data)
+        else:
+            return Response(ser.errors)
