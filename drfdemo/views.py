@@ -1,12 +1,15 @@
 import datetime
 import uuid
+from collections import OrderedDict
 
 from django.core.validators import RegexValidator
 from django.utils import timezone
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.fields import SkipField
 from rest_framework.negotiation import DefaultContentNegotiation
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
+from rest_framework.relations import PKOnlyObject
 from rest_framework.versioning import QueryParameterVersioning, URLPathVersioning, AcceptHeaderVersioning
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -379,8 +382,44 @@ class NbView(APIView):
         else:
             return Response(ser.errors)
 
+class SbModelSerializer(serializers.ModelSerializer):
 
-class SbView:
+    class Meta:
+        model = models.NbUser
+        fields = ["id", "name", "age", "gender"]
+        extra_kwargs = {
+            "id": {"read_only": True},
+            # "gender": {"write_only": True},
+        }
+
+    def to_representation(self, instance):
+        ret = OrderedDict()
+        fields = self._readable_fields
+
+        for field in fields:
+            if hasattr(self, 'nb_%s' % field.field_name):
+                value = getattr(self, 'nb_%s' % field.field_name)(instance)
+                ret[field.field_name] = value
+            else:
+                try:
+                    attribute = field.get_attribute(instance)
+                except SkipField:
+                    continue
+
+                # We skip `to_representation` for `None` values so that fields do
+                # not have to explicitly deal with that case.
+                #
+                # For related fields with `use_pk_only_optimization` we need to
+                # resolve the pk value.
+                check_for_none = attribute.pk if isinstance(attribute, PKOnlyObject) else attribute
+                if check_for_none is None:
+                    ret[field.field_name] = None
+                else:
+                    ret[field.field_name] = field.to_representation(attribute)
+
+        return ret
+
+class SbView(APIView):
     # 不需要认证，直接访问即可
     authentication_classes = []
 
